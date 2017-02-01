@@ -23,10 +23,12 @@ def main():
     with open(cipherfile, 'r') as cf:
         ciphertext = cf.read()
 
-    totalletters, cipherlettercounts, cipherletterprobs = build_single_character_probabilities(ciphertext,
-                                                                                               args.spaces,
-                                                                                               args.punctuation)
-
+    totalletters, cipherlettercounts, cipherletterprobs = build_monogram_probabilities(ciphertext,
+                                                                                       args.spaces,
+                                                                                       args.punctuation)
+    totaldigrams, cipherdigramcounts, cipherdigramprobs = build_digram_probabilities(ciphertext,
+                                                                                     args.spaces,
+                                                                                     args.punctuation)
     print("Cipher text:")
     print(ciphertext)
     print("")
@@ -40,6 +42,11 @@ def main():
     for c in cipherletterprobs:
         print("{0} = {1}".format(c, cipherletterprobs[c]))
     print("")
+    print("Digram Count:")
+    for c in cipherdigramcounts:
+        print("{0} = {1}".format(c, cipherdigramcounts[c]))
+    print("")
+
     if args.knownprobabilities is True:
         print("Single Letter, No Spaces, Source = Stallings:")
         for c in stallings_english_letter_probabilities:

@@ -84,7 +84,7 @@ dc_english_letter_probabilities = sort_prob_dict_by_value_reverse({
 """Probabilities published http://www.data-compression.com/english.html"""
 
 
-def build_single_character_probabilities(inputtext=None, countspaces=False, countpunctuation=False):
+def build_monogram_probabilities(inputtext=None, countspaces=False, countpunctuation=False):
     """
     Builds single letter probabilities from input text.
 
@@ -129,6 +129,46 @@ def build_single_character_probabilities(inputtext=None, countspaces=False, coun
     orderedletterprobs = sort_prob_dict_by_value_reverse(letterprobs)
 
     return totalletters, orderedlettercounts, orderedletterprobs
+
+
+def build_digram_probabilities(inputtext=None, countspace=False, countpunctuation=False):
+    # Show there is an error...
+    if inputtext is None:
+        return None
+
+    totaldigrams = 0
+    digramcounts = dict()
+
+    for i in range(len(inputtext)-1):
+        digram = ""
+        founddigram = None
+        if inputtext[i].isalpha() or (countspace is True and inputtext[i] == ' ') or (countpunctuation is True
+                                                                                      and ispunct(inputtext[i])
+                                                                                      and inputtext[i] != '\n'):
+            digram += inputtext[i]
+            for j in range(i+1, len(inputtext)):
+                if inputtext[j].isalpha() or (countspace is True and inputtext[j] == ' ') or (countpunctuation is True
+                                                                                              and ispunct(inputtext[j])
+                                                                                              and inputtext[j] != '\n'):
+                    digram += inputtext[j]
+                    founddigram = True
+                    break
+
+            if founddigram is True:
+                if digram in digramcounts:
+                    digramcounts[digram] += 1
+                else:
+                    digramcounts[digram] = 1
+                totaldigrams += 1
+
+    digramprobs = dict()
+    for i in digramcounts:
+        digramprobs[i] = digramcounts[i]/totaldigrams
+
+    ordereddigramcounts = sort_prob_dict_by_value_reverse(digramcounts)
+    ordereddigramprobs = sort_prob_dict_by_value_reverse(digramprobs)
+
+    return totaldigrams, ordereddigramcounts, ordereddigramprobs
 
 
 def fit_probability_min_errors(plaintextcharprobs, ciphercharprobs):
