@@ -1,5 +1,7 @@
 from collections import OrderedDict
 from curses.ascii import ispunct
+from ..data import *
+from ..math import *
 
 
 def sort_prob_dict_by_value_reverse( indict ):
@@ -244,3 +246,84 @@ def fit_characters_sorted_probabilities(plaintextngramprobs, cipherngramprobs):
         ciphertoplain[ct[i][0]] = pt[i][0]
 
     return ciphertoplain
+
+def minimize_digram_error(ciphertext, expectedngram1sorted, expectedngram2sorted, countspaces, countpunctuation):
+
+    totalletters, cipherlettercounts, cipherletterprobs = build_monogram_probabilities(ciphertext,
+                                                                                       countspaces,
+                                                                                       countpunctuation)
+    totaldigrams, cipherdigramcounts, cipherdigramprobs = build_digram_probabilities(ciphertext,
+                                                                                     countspaces,
+                                                                                     countpunctuation)
+    # totaltrigrams, ciphertrigramcounts, ciphertrigramprobs = build_trigram_probabilities(ciphertext,
+    #                                                                                      args.spaces,
+    #                                                                                      args.punctuation)
+
+    cipherkeys = list()
+    for c in cipherletterprobs:
+        cipherkeys.append(c)
+
+    plainvalues = list()
+    for p in expectedngram1sorted:
+        plainvalues.append(p)
+
+    ciphertoplain = build_ciphertoplain(cipherkeys, plainvalues)
+
+    # Calculate plain text
+    plaintext = ""
+    for c in ciphertext:
+       if c in ciphertoplain:
+           plaintext += ciphertoplain[c]
+       else:
+           plaintext += c
+
+    # Build frequencies
+    currtotaldigrams, currplaindigramcounts, currplaindigramprobs = build_digram_probabilities(plaintext,
+                                                                                               countspaces,
+                                                                                               countpunctuation)
+    currplaindigrammatrix = calculatedprob_to_matrix(currplaindigramprobs)
+
+    expectedngram2matrix = calculatedprob_to_matrix(expectedngram2sorted)
+
+    # Calculate error f()
+    minerror = ngram2_matrix_error(expectedngram2matrix, currplaindigrammatrix)
+
+    # Swap and test in a loop
+    minchanged = True
+    while minchanged is True:
+        minchanged = False
+        for b in range(1, len(cipherkeys)):
+            newcipherkeys = cipherkeys
+            for a in range(len(cipherkeys)-b):
+                tmp = cipherkeys[a]
+                newcipherkeys[a] = newcipherkeys[a+b]
+                newcipherkeys[a+b] = tmp
+
+                ciphertoplain = build_ciphertoplain(newcipherkeys, plainvalues)
+
+                # Calculate plain text
+                plaintext = ""
+                for c in ciphertext:
+                   if c in ciphertoplain:
+                       plaintext += ciphertoplain[c]
+                   else:
+                       plaintext += c
+
+                # Build frequencies
+                currtotaldigrams, currplaindigramcounts, currplaindigramprobs = build_digram_probabilities(plaintext,
+                                                                                                           countspaces,
+                                                                                                           countpunctuation)
+                currplaindigrammatrix = calculatedprob_to_matrix(currplaindigramprobs)
+
+                # Calculate error f()
+                error = ngram2_matrix_error(expectedngram2matrix, currplaindigrammatrix)
+
+                if error < minerror:
+                    minchanged = True
+                    minerror = error
+                    cipherkeys = newcipherkeys
+
+    print(cipherkeys)
+    print(plainvalues)
+
+    return build_ciphertoplain(cipherkeys, plainvalues)

@@ -1,10 +1,9 @@
 import pandas
 from collections import OrderedDict
-from ..statistics import sort_prob_dict_by_value_reverse
+from ..statistics import *
 
 
-def ngram2_data_to_matrix(indata):
-
+def ngram2_to_matrix(indata):
     matrix = dict()
 
     total = indata['*/*'].sum()
@@ -21,6 +20,19 @@ def ngram2_data_to_matrix(indata):
     return matrix
 
 
+def ngram2_to_ordered_dict(indata):
+    outdata = OrderedDict()
+
+    total = indata['*/*'].sum()
+
+    for i, row in indata.iterrows():
+        digram = row['2-gram'].lower()
+        value = row['*/*'] / total
+        outdata[digram] = value
+
+    return outdata
+
+
 def ngram1_to_ordered_dict(indata):
     outdata = OrderedDict()
 
@@ -31,13 +43,12 @@ def ngram1_to_ordered_dict(indata):
     for i, row in indata.iterrows():
         character = row['1-gram'].lower()
         value = row['*/*']/total
-        unsorteddata[character] = value
+        outdata[character] = value
 
-    return sort_prob_dict_by_value_reverse(unsorteddata)
+    return outdata
 
 
 def calculatedprob_to_matrix(indata):
-
     matrix = dict()
 
     for c in indata:
@@ -51,3 +62,12 @@ def calculatedprob_to_matrix(indata):
         matrix[digram[0]][digram[1]] = value
 
     return matrix
+
+
+def build_ciphertoplain(cipherlist, plainlist):
+    outdata = OrderedDict()
+
+    for i in range(len(cipherlist)):
+        outdata[cipherlist[i]] = plainlist[i]
+
+    return outdata
