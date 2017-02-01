@@ -83,30 +83,6 @@ dc_english_letter_probabilities = sort_prob_dict_by_value_reverse({
 })
 """Probabilities published http://www.data-compression.com/english.html"""
 
-# Information from http://norvig.com/mayzner.html
-mayzner_english_digram_probabilities = sort_prob_dict_by_value_reverse({
-    'th': 3.56 / 100,
-    'he': 3.07 / 100,
-    'in': 2.43 / 100,
-    'er': 2.05 / 100,
-    'an': 1.99 / 100,
-    're': 1.85 / 100,
-    'on': 1.76 / 100,
-    'at': 1.49 / 100,
-    'en': 1.45 / 100,
-    'nd': 1.35 / 100
-})
-"""Probabilities published http://norvig.com/mayzner.html"""
-
-# Information from http://norvig.com/mayzner.html
-mayzner_english_trigram_probabilities = sort_prob_dict_by_value_reverse({
-    'the': 8.7394 / 100,
-    'and': 3.3417 / 100,
-    'ing': 2.6879 / 100,
-    'ion': 2.5818 / 100,
-    'tio': 2.1234 / 100
-})
-"""Probabilities published http://norvig.com/mayzner.html"""
 
 def build_monogram_probabilities(inputtext=None, countspaces=False, countpunctuation=False):
     """
