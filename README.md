@@ -2,6 +2,14 @@
 
 A set of Python tools useful for cryptography and cryptanalysis.  More documentation will be added later.
 
+# Installation
+
+You can install the dependencies with the following command:
+
+```
+pip install -r requirements.txt
+```
+
 # Data:
 
 Some of the data for these tools were downloaded from http://norvig.com/mayzner.html.  The License of that project
