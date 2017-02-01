@@ -251,42 +251,42 @@ def build_trigram_probabilities(inputtext=None, countspace=False, countpunctuati
     return totaltrigrams, orderedtrigramcounts, orderedtrigramprobs
 
 
-def fit_probability_min_errors(plaintextcharprobs, ciphercharprobs):
+def fit_probability_min_errors(plaintextngramprobs, cipherngramprobs):
     """
-    Fits the cipher characters to the most probable plain text characters, based upon the lowest probability error.
+    Fits the cipher n-grams to the most probable plain text n-grams, based upon the lowest probability error.
 
-    :param plaintextcharprobs:  An OrderedDict of plain text probability characters.
-    :param ciphercharprobs:  An OrderedDict of cipher text probability characters.
-    :return: A dict with cipher character key and plain text character value.
+    :param plaintextngramprobs:  An OrderedDict of plain text probability characters.
+    :param cipherngramprobs:  An OrderedDict of cipher text probability characters.
+    :return: A dict with cipher n-gram key and plain text n-gram value.
     """
     ciphertoplain = dict()
-    usedchars = list()
-    for cipherchar in ciphercharprobs:
+    usedngram = list()
+    for cipherngram in cipherngramprobs:
         minerror = None
-        for plainchar in plaintextcharprobs:
-            error = abs(ciphercharprobs[cipherchar] - plaintextcharprobs[plainchar])
+        for plainngram in plaintextngramprobs:
+            error = abs(cipherngramprobs[cipherngram] - plaintextngramprobs[plainngram])
             if minerror is None or minerror > error:
-                if plainchar not in usedchars:
+                if plainngram not in usedngram:
                     minerror = error
-                    minplainchar = plainchar
-        ciphertoplain[cipherchar] = minplainchar
-        usedchars.append(minplainchar)
+                    minplainngram = plainngram
+        ciphertoplain[cipherngram] = minplainngram
+        usedngram.append(minplainngram)
 
     return ciphertoplain
 
 
-def fit_characters_sorted_probabilities(plaintextcharprobs, ciphercharprobs):
+def fit_characters_sorted_probabilities(plaintextngramprobs, cipherngramprobs):
     """
-    Fits the cipher characters to the probable plain text characters by descending probabilities.
+    Fits the cipher n-grams to the probable plain text n-grams by descending probabilities.
 
-    :param plaintextcharprobs:  An OrderedDict of plain text probability characters.
-    :param ciphercharprobs:  An OrderedDict of cipher text probability characters.
-    :return: A dict with cipher character key and plain text character value.
+    :param plaintextngramprobs:  An OrderedDict of plain text probability n-grams.
+    :param cipherngramprobs:  An OrderedDict of cipher text probability n-grams.
+    :return: A dict with cipher n-gram key and plain text n-gram value.
     """
     ciphertoplain = dict()
 
-    ct = list(ciphercharprobs.items())
-    pt = list(plaintextcharprobs.items())
+    ct = list(cipherngramprobs.items())
+    pt = list(plaintextngramprobs.items())
 
     for i in range(len(ct)):
         ciphertoplain[ct[i][0]] = pt[i][0]
