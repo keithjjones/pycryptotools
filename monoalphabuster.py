@@ -2,6 +2,7 @@ import argparse
 import pandas
 from library.statistics import *
 from library.data import *
+from library.math import *
 import os
 
 def main():
@@ -39,7 +40,13 @@ def main():
     ngram2 = ngram2[['2-gram','*/*']]
     ngram2matrix = ngram2_data_to_matrix(ngram2)
 
-    print(ngram2matrix)
+    cipherdigrammatrix = calculatedprob_to_matrix(cipherdigramprobs)
+
+    print(cipherdigrammatrix)
+
+    error = ngram2_matrix_error(ngram2matrix, cipherdigrammatrix)
+
+    print(error)
 
     print("Cipher Text:")
     print("")

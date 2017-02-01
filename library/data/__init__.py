@@ -15,7 +15,21 @@ def ngram2_data_to_matrix(indata):
         if digram[0] not in matrix:
             matrix[digram[0]] = dict()
         matrix[digram[0]][digram[1]] = value
-        print(matrix[digram[0]])
-        print(matrix[digram[0]][digram[1]])
+
+    return matrix
+
+def calculatedprob_to_matrix(indata):
+
+    matrix = dict()
+
+    for c in indata:
+        digram = list()
+        digram.append(c[0].lower())
+        digram.append(c[1].lower())
+        value = indata[c]
+
+        if digram[0] not in matrix:
+            matrix[digram[0]] = dict()
+        matrix[digram[0]][digram[1]] = value
 
     return matrix
