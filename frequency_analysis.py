@@ -12,6 +12,9 @@ def main():
     parser.add_argument("-p", "--punctuation", action='store_true',
                         help="Counts punctuation as valid cipher characters instead of ignoring them."
                              "", required=False)
+    parser.add_argument("-k", "--knownprobabilities", action='store_true',
+                        help="Displays known letter probabilities from various sources."
+                             "", required=False)
 
     args = parser.parse_args()
 
@@ -36,6 +39,11 @@ def main():
     print("Letter Frequency:")
     for c in cipherletterprobs:
         print("{0} = {1}".format(c, cipherletterprobs[c]))
+
+#    if args.knownprobabilities is True:
+#        print("Single Letter, No Spaces, Stallings:")
+#        for c in stallings_english_letter_probabilities:
+
 
 if __name__ == "__main__":
     main()
