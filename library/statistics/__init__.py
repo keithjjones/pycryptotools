@@ -1,9 +1,26 @@
 from collections import OrderedDict
 from curses.ascii import ispunct
 
+
+def sort_prob_dict_by_value_reverse( indict ):
+    """
+    Returns an OrderedDict that has been sorted on value.
+
+    :param indict:  A dict representing ngram probabilities.
+    :return: An OrderedDict, sorted in reverse (largest to smallest)
+    """
+    outdict = OrderedDict()
+
+    indictsorted = sorted(indict, key=indict.__getitem__, reverse=True)
+
+    for i in indictsorted:
+        outdict[i] = indict[i]
+
+    return outdict
+
 # Source for these statistics:  Cryptography and Network Security, Principles and Practice,
 # William Stallings, 7th Edition, page 77, Figure 3.5
-stallings_english_letter_probabilities = {
+stallings_english_letter_probabilities = sort_prob_dict_by_value_reverse({
     'a': 8.167/100,
     'b': 1.492/100,
     'c': 2.782/100,
@@ -30,10 +47,12 @@ stallings_english_letter_probabilities = {
     'x': 0.150/100,
     'y': 1.974/100,
     'z': 0.074/100
-}
+})
+"""Source for these statistics:  Cryptography and Network Security, Principles and Practice,
+William Stallings, 7th Edition, page 77, Figure 3.5"""
 
 # Information from http://www.data-compression.com/english.html
-dc_english_letter_probabilities = {
+dc_english_letter_probabilities = sort_prob_dict_by_value_reverse({
     'a': 0.0651738,
     'b': 0.0124248,
     'c': 0.0217339,
@@ -61,7 +80,8 @@ dc_english_letter_probabilities = {
     'y': 0.0145984,
     'z': 0.0007836,
     ' ': 0.1918182
-}
+})
+"""Probabilities published http://www.data-compression.com/english.html"""
 
 
 def build_single_character_probabilities(inputtext=None, countspaces=False, countpunctuation=False):
@@ -110,18 +130,45 @@ def build_single_character_probabilities(inputtext=None, countspaces=False, coun
 
     return totalletters, orderedlettercounts, orderedletterprobs
 
-def sort_prob_dict_by_value_reverse( indict ):
+
+def fit_probability_min_errors(plaintextcharprobs, ciphercharprobs):
     """
-    Returns an OrderedDict that has been sorted on value.
+    Fits the cipher characters to the most probable plain text characters, based upon the lowest probability error.
 
-    :param indict:  A dict representing ngram probabilities.
-    :return: An OrderedDict, sorted in reverse (largest to smallest)
+    :param plaintextcharprobs:  An OrderedDict of plain text probability characters.
+    :param ciphercharprobs:  An OrderedDict of cipher text probability characters.
+    :return: A dict with cipher character key and plain text character value.
     """
-    outdict = OrderedDict()
+    ciphertoplain = dict()
+    usedchars = list()
+    for cipherchar in ciphercharprobs:
+        minerror = None
+        for plainchar in plaintextcharprobs:
+            error = abs(ciphercharprobs[cipherchar] - plaintextcharprobs[plainchar])
+            if minerror is None or minerror > error:
+                if plainchar not in usedchars:
+                    minerror = error
+                    minplainchar = plainchar
+        ciphertoplain[cipherchar] = minplainchar
+        usedchars.append(minplainchar)
 
-    indictsorted = sorted(indict, key=indict.__getitem__, reverse=True)
+    return ciphertoplain
 
-    for i in indictsorted:
-        outdict[i] = indict[i]
 
-    return outdict
+def fit_characters_sorted_probabilities(plaintextcharprobs, ciphercharprobs):
+    """
+    Fits the cipher characters to the probable plain text characters by descending probabilities.
+
+    :param plaintextcharprobs:  An OrderedDict of plain text probability characters.
+    :param ciphercharprobs:  An OrderedDict of cipher text probability characters.
+    :return: A dict with cipher character key and plain text character value.
+    """
+    ciphertoplain = dict()
+
+    ct = list(ciphercharprobs.items())
+    pt = list(plaintextcharprobs.items())
+
+    for i in range(len(ct)):
+        ciphertoplain[ct[i][0]] = pt[i][0]
+
+    return ciphertoplain

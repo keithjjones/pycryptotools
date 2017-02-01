@@ -39,11 +39,11 @@ def main():
     print("Letter Frequency:")
     for c in cipherletterprobs:
         print("{0} = {1}".format(c, cipherletterprobs[c]))
-
-#    if args.knownprobabilities is True:
-#        print("Single Letter, No Spaces, Stallings:")
-#        for c in stallings_english_letter_probabilities:
-
+    print("")
+    if args.knownprobabilities is True:
+        print("Single Letter, No Spaces, Source = Stallings:")
+        for c in stallings_english_letter_probabilities:
+            print("{0} = {1}".format(c, stallings_english_letter_probabilities[c]))
 
 if __name__ == "__main__":
     main()
