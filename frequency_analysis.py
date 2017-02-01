@@ -29,7 +29,11 @@ def main():
     totaldigrams, cipherdigramcounts, cipherdigramprobs = build_digram_probabilities(ciphertext,
                                                                                      args.spaces,
                                                                                      args.punctuation)
-    print("Cipher text:")
+    totaltrigrams, ciphertrigramcounts, ciphertrigramprobs = build_trigram_probabilities(ciphertext,
+                                                                                         args.spaces,
+                                                                                         args.punctuation)
+    print("**** Cipher Text ****")
+    print("")
     print(ciphertext)
     print("")
     print("Total Letters: {0}".format(totalletters))
@@ -50,8 +54,18 @@ def main():
     for c in cipherdigramprobs:
         print("{0} = {1}".format(c, cipherdigramprobs[c]))
     print("")
+    print("Trigram Count:")
+    for c in ciphertrigramcounts:
+        print("{0} = {1}".format(c, ciphertrigramcounts[c]))
+    print("")
+    print("Trigram Frequency:")
+    for c in ciphertrigramprobs:
+        print("{0} = {1}".format(c, ciphertrigramprobs[c]))
+    print("")
 
     if args.knownprobabilities is True:
+        print("**** Researched Probabilities ****")
+        print("")
         print("Single Letter, No Spaces, Source = Stallings:")
         for c in stallings_english_letter_probabilities:
             print("{0} = {1}".format(c, stallings_english_letter_probabilities[c]))
@@ -59,6 +73,10 @@ def main():
         print("Digram, No Spaces, Source = Mayzner:")
         for c in mayzner_english_digram_probabilities:
             print("{0} = {1}".format(c, mayzner_english_digram_probabilities[c]))
+        print("")
+        print("Trigram, No Spaces, Source = Mayzner:")
+        for c in mayzner_english_trigram_probabilities:
+            print("{0} = {1}".format(c, mayzner_english_trigram_probabilities[c]))
 
 if __name__ == "__main__":
     main()

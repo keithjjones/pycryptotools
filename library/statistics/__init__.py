@@ -94,9 +94,19 @@ mayzner_english_digram_probabilities = sort_prob_dict_by_value_reverse({
     'on': 1.76 / 100,
     'at': 1.49 / 100,
     'en': 1.45 / 100,
-    'nd': 1.35 / 100,
+    'nd': 1.35 / 100
 })
-"""Probabilities publised http://norvig.com/mayzner.html"""
+"""Probabilities published http://norvig.com/mayzner.html"""
+
+# Information from http://norvig.com/mayzner.html
+mayzner_english_trigram_probabilities = sort_prob_dict_by_value_reverse({
+    'the': 8.7394 / 100,
+    'and': 3.3417 / 100,
+    'ing': 2.6879 / 100,
+    'ion': 2.5818 / 100,
+    'tio': 2.1234 / 100
+})
+"""Probabilities published http://norvig.com/mayzner.html"""
 
 def build_monogram_probabilities(inputtext=None, countspaces=False, countpunctuation=False):
     """
@@ -146,6 +156,15 @@ def build_monogram_probabilities(inputtext=None, countspaces=False, countpunctua
 
 
 def build_digram_probabilities(inputtext=None, countspace=False, countpunctuation=False):
+    """
+    Builds double letter probabilities from input text.
+
+    :param inputtext:  A string to analyze.
+    :param countspaces:  Set to True to treat spaces as a valid cipher character.
+    :param countpunctuation:  Set to True to treat punctuation as valid cipher character.  Will not count new lines.
+    :return: totalletters, lettercounts, letterprobs - totalletters is an int, lettercounts and letterprobs are an
+        OrderedDict sorted on value, descending.  None is returned if the inputtext is None.
+    """
     # Show there is an error...
     if inputtext is None:
         return None
@@ -183,6 +202,53 @@ def build_digram_probabilities(inputtext=None, countspace=False, countpunctuatio
     ordereddigramprobs = sort_prob_dict_by_value_reverse(digramprobs)
 
     return totaldigrams, ordereddigramcounts, ordereddigramprobs
+
+
+def build_trigram_probabilities(inputtext=None, countspace=False, countpunctuation=False):
+    # Show there is an error...
+    if inputtext is None:
+        return None
+
+    totaltrigrams = 0
+    trigramcounts = dict()
+
+    for i in range(len(inputtext) - 2):
+        trigram = ""
+        foundtrigram = False
+        if inputtext[i].isalpha() or (countspace is True and inputtext[i] == ' ') or (countpunctuation is True
+                                                                                      and ispunct(inputtext[i])
+                                                                                      and inputtext[i] != '\n'):
+            trigram += inputtext[i]
+            for j in range(i + 1, len(inputtext) - 1):
+                if inputtext[j].isalpha() or (countspace is True and inputtext[j] == ' ') or (countpunctuation is True
+                                                                                              and ispunct(inputtext[j])
+                                                                                              and inputtext[j] != '\n'):
+                    trigram += inputtext[j]
+                    for k in range(j + 1, len(inputtext)):
+                        if inputtext[k].isalpha() or (countspace is True and inputtext[k] == ' ') or (
+                                    countpunctuation is True
+                            and ispunct(inputtext[k])
+                        and inputtext[k] != '\n'):
+                            trigram += inputtext[k]
+                            foundtrigram = True
+                            break
+                    break
+
+        if foundtrigram is True:
+            if trigram in trigramcounts:
+                trigramcounts[trigram] += 1
+            else:
+                trigramcounts[trigram] = 1
+            totaltrigrams += 1
+
+    trigramprobs = dict()
+    for i in trigramcounts:
+        trigramprobs[i] = trigramcounts[i] / totaltrigrams
+
+    orderedtrigramcounts = sort_prob_dict_by_value_reverse(trigramcounts)
+    orderedtrigramprobs = sort_prob_dict_by_value_reverse(trigramprobs)
+
+    return totaltrigrams, orderedtrigramcounts, orderedtrigramprobs
 
 
 def fit_probability_min_errors(plaintextcharprobs, ciphercharprobs):
