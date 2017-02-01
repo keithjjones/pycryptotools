@@ -1,4 +1,6 @@
 import pandas
+from collections import OrderedDict
+from ..statistics import sort_prob_dict_by_value_reverse
 
 
 def ngram2_data_to_matrix(indata):
@@ -17,6 +19,22 @@ def ngram2_data_to_matrix(indata):
         matrix[digram[0]][digram[1]] = value
 
     return matrix
+
+
+def ngram1_to_ordered_dict(indata):
+    outdata = OrderedDict()
+
+    unsorteddata = dict()
+
+    total = indata['*/*'].sum()
+
+    for i, row in indata.iterrows():
+        character = row['1-gram'].lower()
+        value = row['*/*']/total
+        unsorteddata[character] = value
+
+    return sort_prob_dict_by_value_reverse(unsorteddata)
+
 
 def calculatedprob_to_matrix(indata):
 
