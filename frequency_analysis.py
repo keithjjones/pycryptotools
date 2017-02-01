@@ -46,11 +46,19 @@ def main():
     for c in cipherdigramcounts:
         print("{0} = {1}".format(c, cipherdigramcounts[c]))
     print("")
+    print("Digram Frequency:")
+    for c in cipherdigramprobs:
+        print("{0} = {1}".format(c, cipherdigramprobs[c]))
+    print("")
 
     if args.knownprobabilities is True:
         print("Single Letter, No Spaces, Source = Stallings:")
         for c in stallings_english_letter_probabilities:
             print("{0} = {1}".format(c, stallings_english_letter_probabilities[c]))
+        print("")
+        print("Digram, No Spaces, Source = Mayzner:")
+        for c in mayzner_english_digram_probabilities:
+            print("{0} = {1}".format(c, mayzner_english_digram_probabilities[c]))
 
 if __name__ == "__main__":
     main()

@@ -21,32 +21,32 @@ def sort_prob_dict_by_value_reverse( indict ):
 # Source for these statistics:  Cryptography and Network Security, Principles and Practice,
 # William Stallings, 7th Edition, page 77, Figure 3.5
 stallings_english_letter_probabilities = sort_prob_dict_by_value_reverse({
-    'a': 8.167/100,
-    'b': 1.492/100,
-    'c': 2.782/100,
-    'd': 4.253/100,
-    'e': 12.702/100,
-    'f': 2.228/100,
-    'g': 2.015/100,
-    'h': 6.094/100,
-    'i': 6.996/100,
-    'j': 0.153/100,
-    'k': 0.772/100,
-    'l': 4.025/100,
-    'm': 2.406/100,
-    'n': 6.749/100,
-    'o': 7.507/100,
-    'p': 1.929/100,
-    'q': 0.095/100,
-    'r': 5.987/100,
-    's': 6.327/100,
-    't': 9.056/100,
-    'u': 2.758/100,
-    'v': 0.978/100,
-    'w': 2.360/100,
-    'x': 0.150/100,
-    'y': 1.974/100,
-    'z': 0.074/100
+    'a': 8.167 / 100,
+    'b': 1.492 / 100,
+    'c': 2.782 / 100,
+    'd': 4.253 / 100,
+    'e': 12.702 / 100,
+    'f': 2.228 / 100,
+    'g': 2.015 / 100,
+    'h': 6.094 / 100,
+    'i': 6.996 / 100,
+    'j': 0.153 / 100,
+    'k': 0.772 / 100,
+    'l': 4.025 / 100,
+    'm': 2.406 / 100,
+    'n': 6.749 / 100,
+    'o': 7.507 / 100,
+    'p': 1.929 / 100,
+    'q': 0.095 / 100,
+    'r': 5.987 / 100,
+    's': 6.327 / 100,
+    't': 9.056 / 100,
+    'u': 2.758 / 100,
+    'v': 0.978 / 100,
+    'w': 2.360 / 100,
+    'x': 0.150 / 100,
+    'y': 1.974 / 100,
+    'z': 0.074 / 100
 })
 """Source for these statistics:  Cryptography and Network Security, Principles and Practice,
 William Stallings, 7th Edition, page 77, Figure 3.5"""
@@ -83,6 +83,20 @@ dc_english_letter_probabilities = sort_prob_dict_by_value_reverse({
 })
 """Probabilities published http://www.data-compression.com/english.html"""
 
+# Information from http://norvig.com/mayzner.html
+mayzner_english_digram_probabilities = sort_prob_dict_by_value_reverse({
+    'th': 3.56 / 100,
+    'he': 3.07 / 100,
+    'in': 2.43 / 100,
+    'er': 2.05 / 100,
+    'an': 1.99 / 100,
+    're': 1.85 / 100,
+    'on': 1.76 / 100,
+    'at': 1.49 / 100,
+    'en': 1.45 / 100,
+    'nd': 1.35 / 100,
+})
+"""Probabilities publised http://norvig.com/mayzner.html"""
 
 def build_monogram_probabilities(inputtext=None, countspaces=False, countpunctuation=False):
     """
@@ -141,7 +155,7 @@ def build_digram_probabilities(inputtext=None, countspace=False, countpunctuatio
 
     for i in range(len(inputtext)-1):
         digram = ""
-        founddigram = None
+        founddigram = False
         if inputtext[i].isalpha() or (countspace is True and inputtext[i] == ' ') or (countpunctuation is True
                                                                                       and ispunct(inputtext[i])
                                                                                       and inputtext[i] != '\n'):
