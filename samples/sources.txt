@@ -1,0 +1,3 @@
+cipher1.txt:  https://twitter.com/nsacareers/status/463321993878994945?lang=en
+cipher2.txt:  https://twitter.com/NSACareers/status/465839250328809472
+cipher3.txt:  https://twitter.com/NSACareers/status/468399492640034816
