@@ -16,6 +16,17 @@ Some of the data for these tools were downloaded from http://norvig.com/mayzner.
 applies to the data only.  This data can be found as "ngrams1.csv", "ngrams2.csv", and "ngrams3.csv" in the data
 directory.
 
+# References:
+
+Here are some references that were consulted:
+    - http://storage.googleapis.com/books/ngrams/books/datasetsv2.html
+    - Cryptography and Network Secuirty, William Stallings, 7th Edition
+    - http://norvig.com/mayzner.html
+    - http://www.data-compression.com/english.html
+    - http://quipqiup.com/
+    - http://www.ti89.com/cryptotut/frequencies.htm
+    - http://altamatic.com/crypt
+
 # License:
 
 This application(s) is/are covered by the Creative Commons BY-SA license.
