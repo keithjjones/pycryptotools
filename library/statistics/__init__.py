@@ -251,30 +251,6 @@ def build_trigram_probabilities(inputtext=None, countspace=False, countpunctuati
     return totaltrigrams, orderedtrigramcounts, orderedtrigramprobs
 
 
-def fit_probability_min_errors(plaintextngramprobs, cipherngramprobs):
-    """
-    Fits the cipher n-grams to the most probable plain text n-grams, based upon the lowest probability error.
-
-    :param plaintextngramprobs:  An OrderedDict of plain text probability characters.
-    :param cipherngramprobs:  An OrderedDict of cipher text probability characters.
-    :return: A dict with cipher n-gram key and plain text n-gram value.
-    """
-    ciphertoplain = dict()
-    usedngram = list()
-    for cipherngram in cipherngramprobs:
-        minerror = None
-        for plainngram in plaintextngramprobs:
-            error = abs(cipherngramprobs[cipherngram] - plaintextngramprobs[plainngram])
-            if minerror is None or minerror > error:
-                if plainngram not in usedngram:
-                    minerror = error
-                    minplainngram = plainngram
-        ciphertoplain[cipherngram] = minplainngram
-        usedngram.append(minplainngram)
-
-    return ciphertoplain
-
-
 def fit_characters_sorted_probabilities(plaintextngramprobs, cipherngramprobs):
     """
     Fits the cipher n-grams to the probable plain text n-grams by descending probabilities.
