@@ -16,6 +16,10 @@ def main():
     parser.add_argument("-p", "--punctuation", action='store_true',
                         help="Counts punctuation as valid cipher characters instead of ignoring them."
                              "", required=False)
+    parser.add_argument("-m", "--mayzner", action='store_true',
+                        help="Use Mayzner statistical data."
+                             "", required=False)
+
 
     args = parser.parse_args()
 
@@ -27,12 +31,15 @@ def main():
 
     # Load our statistical data
     print("Loading statistical data...")
-    # ngram_data = mayzner_data(os.path.join('data',
-    #                                        'mayzner',
-    #                                        'ngrams4.csv'))
-    ngram_data = practical_cryptography_data(os.path.join('data',
-                                                          'practicalcryptography.com',
-                                                          'english_quadgrams.txt'))
+
+    if args.mayzner:
+        ngram_data = mayzner_data(os.path.join('data',
+                                               'mayzner',
+                                               'ngrams4.csv'))
+    else:
+        ngram_data = practical_cryptography_data(os.path.join('data',
+                                                              'practicalcryptography.com',
+                                                              'english_quadgrams.txt'))
 
     # Setup our initial keys....
     cipherlettercounts = build_ngram_counts(ciphertext, 1, args.spaces, args.punctuation)
