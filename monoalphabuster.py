@@ -5,6 +5,7 @@ from library.data import *
 import os
 import string
 import random
+import re
 
 
 def main():
@@ -49,14 +50,23 @@ def main():
     plainvalues = list(string.ascii_lowercase)
     cipherkey = plainvalues.copy()
 
+    # Build our search and replace regular expression
+    subre = "[^a-z"
+    if args.spaces:
+        subre += "\ "
+    if args.punctuation:
+        subre += "\P{P}"
+    subre += "]"
+
     # Print the cipher text...
     print("Cipher Text:")
     print("")
     print(ciphertext)
 
     # Get the initial error for the key...
-    testciphertext = MonoAlphaSubstitution(cipherkey, plainvalues).decrypt(ciphertext)
-    max_score = ngram_data.score(testciphertext)
+    testplaintext = MonoAlphaSubstitution(cipherkey, plainvalues).decrypt(ciphertext)
+    testplaintextchars = re.sub(subre, '', testplaintext.lower())
+    max_score = ngram_data.score(testplaintextchars)
     max_score_cipher_key = cipherkey.copy()
 
     print("Looping continuously, press ctl-c when you have your plain text!")
@@ -71,11 +81,12 @@ def main():
         parentcipherkey = max_score_cipher_key.copy()
         random.shuffle(parentcipherkey)
 
-        testciphertext = MonoAlphaSubstitution(parentcipherkey, plainvalues).decrypt(ciphertext)
-        parent_score = ngram_data.score(testciphertext)
+        testplaintext = MonoAlphaSubstitution(parentcipherkey, plainvalues).decrypt(ciphertext)
+        testplaintextchars = re.sub(subre, '', testplaintext.lower())
+        parent_score = ngram_data.score(testplaintextchars)
 
         count = 0
-        while count < 1000:
+        while count < 10000:
             childcipherkey = parentcipherkey.copy()
             # Swap two characters in the cipherkey to test score.
             first = random.randint(0, len(childcipherkey)-1)
@@ -84,8 +95,9 @@ def main():
             childcipherkey[first] = childcipherkey[second]
             childcipherkey[second] = tmp
 
-            testciphertext = MonoAlphaSubstitution(childcipherkey, plainvalues).decrypt(ciphertext)
-            child_score = ngram_data.score(testciphertext)
+            testplaintext = MonoAlphaSubstitution(childcipherkey, plainvalues).decrypt(ciphertext)
+            testplaintextchars = re.sub(subre, '', testplaintext.lower())
+            child_score = ngram_data.score(testplaintextchars)
             if child_score > parent_score:
                 parent_score = child_score
                 parentcipherkey = childcipherkey.copy()
@@ -93,7 +105,7 @@ def main():
             count += 1
 
         if parent_score > max_score:
-            testciphertext = MonoAlphaSubstitution(parentcipherkey, plainvalues).decrypt(ciphertext)
+            testplaintext = MonoAlphaSubstitution(parentcipherkey, plainvalues).decrypt(ciphertext)
             print("*****")
             print("Iteration {0} better score {1}".format(i, parent_score))
             print("Current Cipher Key/Plain Values:")
@@ -102,7 +114,7 @@ def main():
             print("Cipher Text:")
             print(ciphertext)
             print("Current Plain Text:")
-            print(testciphertext)
+            print(testplaintext)
             max_score = parent_score
             max_score_cipher_key = parentcipherkey.copy()
 
