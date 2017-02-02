@@ -110,7 +110,6 @@ def build_ngram_counts(inputtext=None, n=1, countspace=False, countpunctuation=F
                 (ispunct(inputtext[c+i]) and countpunctuation is True and inputtext[c+i] != '\n') or
                     (inputtext[c+i] == ' ' and countspace is True)):
                 ngram += inputtext[c+i]
-                print("n {0} ngram {1} c {2} i {3}".format(n,ngram,c,i))
             i += 1
 
         if len(ngram) == n:
@@ -118,6 +117,5 @@ def build_ngram_counts(inputtext=None, n=1, countspace=False, countpunctuation=F
                 ngrams[ngram] += 1
             else:
                 ngrams[ngram] = 1
-            print(ngrams)
 
     return sort_dict_by_value_reverse(ngrams)

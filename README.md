@@ -13,8 +13,8 @@ pip install -r requirements.txt
 # Data:
 
 Some of the data for these tools were downloaded from http://norvig.com/mayzner.html.  The License of that project
-applies to the data only.  This data can be found as "ngrams1.csv", "ngrams2.csv", and "ngrams3.csv" in the data
-directory.
+applies to that data only.  Some other data was downloaded from http://practicalcryptography.com/.  The License of
+that project applies to that data only.  The data can be found in the data directory.
 
 # References:
 

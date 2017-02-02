@@ -27,11 +27,32 @@ def main():
 
     # Load our statistical data
     print("Loading statistical data...")
-    md = mayzner_data(os.path.join('data', 'ngrams4.csv'))
+    # ngram_data = mayzner_data(os.path.join('data',
+    #                                        'mayzner',
+    #                                        'ngrams4.csv'))
+    ngram_data = practical_cryptography_data(os.path.join('data',
+                                                          'practicalcryptography.com',
+                                                          'english_quadgrams.txt'))
 
     # Setup our initial keys....
+    cipherlettercounts = build_ngram_counts(ciphertext, 1, args.spaces, args.punctuation)
+
+    # Build our initial cipher key based upon frequency...
     plainvalues = list(string.ascii_lowercase)
-    cipherkey = list(string.ascii_lowercase)
+    cipherkey = plainvalues.copy()
+
+    # cipherkey = list()
+    # for c in cipherlettercounts:
+    #     cipherkey.append(c)
+    #
+    # # Find any missing values in our initial cipher key...
+    # ckset = set(cipherkey)
+    # missingset = set(plainvalues) - ckset
+    # for m in missingset:
+    #     cipherkey.append(m)
+    #
+    # print(cipherkey)
+    # print(len(cipherkey))
 
     # Print the cipher text...
     print("Cipher Text:")
@@ -40,25 +61,52 @@ def main():
 
     # Get the initial error for the key...
     testciphertext = MonoAlphaSubstitution(cipherkey, plainvalues).decrypt(ciphertext)
-    max_score = md.score(testciphertext)
-    max_score_cipher_key = cipherkey
+    max_score = ngram_data.score(testciphertext)
+    max_score_cipher_key = cipherkey.copy()
 
     print("Looping continuously, press ctl-c when you have your plain text!")
 
-    i = 1
+    i = 0
     while True:
         i += 1
-        random.shuffle(cipherkey)
-        testciphertext = MonoAlphaSubstitution(cipherkey, plainvalues).decrypt(ciphertext)
-        current_score = md.score(testciphertext)
 
-        if current_score > max_score:
+        parentcipherkey = max_score_cipher_key.copy()
+        random.shuffle(parentcipherkey)
+
+        testciphertext = MonoAlphaSubstitution(parentcipherkey, plainvalues).decrypt(ciphertext)
+        parent_score = ngram_data.score(testciphertext)
+
+        count = 0
+        while count < 1000:
+            childcipherkey = parentcipherkey.copy()
+            # Swap two characters in the cipherkey to test score.
+            first = random.randint(0, len(childcipherkey)-1)
+            second = random.randint(0, len(childcipherkey)-1)
+            tmp = childcipherkey[first]
+            childcipherkey[first] = childcipherkey[second]
+            childcipherkey[second] = tmp
+
+            testciphertext = MonoAlphaSubstitution(childcipherkey, plainvalues).decrypt(ciphertext)
+            child_score = ngram_data.score(testciphertext)
+            if child_score > parent_score:
+                parent_score = child_score
+                parentcipherkey = childcipherkey.copy()
+                count = 0
+            count += 1
+
+        if parent_score > max_score:
+            testciphertext = MonoAlphaSubstitution(parentcipherkey, plainvalues).decrypt(ciphertext)
             print("*****")
-            print("Iteration {0} better score {1} with cipher key {2}:".format(i, current_score, cipherkey))
+            print("Iteration {0} better score {1}".format(i, parent_score))
+            print("Current Cipher Key/Plain Values:")
+            print(parentcipherkey)
+            print(plainvalues)
+            print("Cipher Text:")
+            print(ciphertext)
             print("Current Plain Text:")
             print(testciphertext)
-            max_score = current_score
-            max_score_cipher_key = cipherkey
+            max_score = parent_score
+            max_score_cipher_key = parentcipherkey.copy()
 
 if __name__ == "__main__":
     main()
