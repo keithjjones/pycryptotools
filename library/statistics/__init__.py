@@ -85,6 +85,14 @@ dc_english_letter_probabilities = sort_dict_by_value_reverse({
 
 
 def build_ngram_counts(inputtext=None, n=1, countspace=False, countpunctuation=False):
+    """
+    Builds the ngram counts for a piece of text.
+    :param inputtext: The text to measure.
+    :param n: The n in n-gram
+    :param countspace: Count spaces as a valid character in n-grams.
+    :param countpunctuation: Count punctuation as valid characters in n-grams (minus new lines!)
+    :return: A sorted OrderedDict containing the n-grams and counts of n-grams.
+    """
     if inputtext is None or n < 1:
         return None
 
@@ -113,5 +121,3 @@ def build_ngram_counts(inputtext=None, n=1, countspace=False, countpunctuation=F
             print(ngrams)
 
     return sort_dict_by_value_reverse(ngrams)
-
-class ngram_score(object):

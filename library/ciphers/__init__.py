@@ -1,5 +1,11 @@
 class MonoAlphaSubstitution(object):
     def __init__(self, cipherkey, plainvalues):
+        """
+        Creates a mono alpha cipher object.
+
+        :param cipherkey:  A list or string corresponding to the plain text values.
+        :param plainvalues: The corresponding plain text values.
+        """
         if len(cipherkey) != len(plainvalues):
             raise Exception("Cipher key and plain values are not the same size!")
         if len(cipherkey) < 1:
@@ -21,7 +27,10 @@ class MonoAlphaSubstitution(object):
 
         plaintext = ""
         for c in ciphertext:
-            plaintext += ciphertoplain[c]
+            if c in ciphertoplain:
+                plaintext += ciphertoplain[c]
+            else:
+                plaintext += c
 
         return plaintext
 

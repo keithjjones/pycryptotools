@@ -19,6 +19,7 @@ directory.
 # References:
 
 Here are some references that were consulted:
+    - http://practicalcryptography.com/cryptanalysis/text-characterisation/quadgrams/#a-python-implementation
     - http://storage.googleapis.com/books/ngrams/books/datasetsv2.html
     - Cryptography and Network Secuirty, William Stallings, 7th Edition
     - http://vanilla47.com/PDFs/Cryptography/Cryptoanalysis/A%20Fast%20Method%20for%20Cryptoanalysis%20of%20Substitution%20Ciphers.pdf

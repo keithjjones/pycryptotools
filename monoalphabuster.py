@@ -1,9 +1,10 @@
 import argparse
-import pandas
+from library.ciphers import *
 from library.statistics import *
 from library.data import *
-from library.math import *
 import os
+import string
+import random
 
 def main():
     parser = argparse.ArgumentParser(description='Attempts to decrypt mono alpha ciphers.')
@@ -20,50 +21,44 @@ def main():
 
     cipherfile = args.CipherFile
 
+    # Read the cipher text...
     with open(cipherfile, 'r') as cf:
         ciphertext = cf.read()
 
-    ngram1 = pandas.read_csv(os.path.join('data','ngrams1.csv'), keep_default_na=False, na_values=['_'])
-    ngram2 = pandas.read_csv(os.path.join('data','ngrams2.csv'), keep_default_na=False, na_values=['_'])
-    ngram3 = pandas.read_csv(os.path.join('data','ngrams3.csv'), keep_default_na=False, na_values=['_'])
+    # Load our statistical data
+    print("Loading statistical data...")
+    md = mayzner_data(os.path.join('data', 'ngrams4.csv'))
 
-    ngram1 = ngram1[['1-gram','*/*']]
-    ngram1sorted = ngram1_to_ordered_dict(ngram1)
+    # Setup our initial keys....
+    plainvalues = list(string.ascii_lowercase)
+    cipherkey = list(string.ascii_lowercase)
 
-    ngram2 = ngram2[['2-gram','*/*']]
-    ngram2sorted = ngram2_to_ordered_dict(ngram2)
-
-    # with open('data/mobydick.txt', 'r') as mb:
-    #     exampletext = mb.read()
-    #     exampletext = exampletext.lower()
-
-    # totalletters, exlettercounts, exletterprobs = build_monogram_probabilities(exampletext,
-    #                                                                            args.spaces,
-    #                                                                            args.punctuation)
-    # totaldigrams, exdigramcounts, exdigramprobs = build_digram_probabilities(exampletext,
-    #                                                                          args.spaces,
-    #                                                                          args.punctuation)
-
+    # Print the cipher text...
     print("Cipher Text:")
     print("")
     print(ciphertext)
 
-    ciphertoplain = minimize_digram_error(ciphertext, ngram1sorted, ngram2sorted,
-                                          args.spaces, args.punctuation)
-    # ciphertoplain = minimize_digram_error(ciphertext, exletterprobs, exdigramprobs,
-    #                                       args.spaces, args.punctuation)
+    # Get the initial error for the key...
+    testciphertext = MonoAlphaSubstitution(cipherkey, plainvalues).decrypt(ciphertext)
+    max_score = md.score(testciphertext)
+    max_score_cipher_key = cipherkey
 
-    print("Plain Text: \n")
+    print("Looping continuously, press ctl-c when you have your plain text!")
 
-    plaintext = ""
-    for c in ciphertext:
-       if c in ciphertoplain:
-           plaintext += ciphertoplain[c]
-       else:
-           plaintext += c
+    i = 1
+    while True:
+        i += 1
+        random.shuffle(cipherkey)
+        testciphertext = MonoAlphaSubstitution(cipherkey, plainvalues).decrypt(ciphertext)
+        current_score = md.score(testciphertext)
 
-    print(plaintext)
-
+        if current_score > max_score:
+            print("*****")
+            print("Iteration {0} better score {1} with cipher key {2}:".format(i, current_score, cipherkey))
+            print("Current Plain Text:")
+            print(testciphertext)
+            max_score = current_score
+            max_score_cipher_key = cipherkey
 
 if __name__ == "__main__":
     main()

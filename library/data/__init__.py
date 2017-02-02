@@ -25,3 +25,18 @@ class mayzner_data(object):
             self.log_prob[row[self.type_of_file].lower()] = log10(float(row['*/*'])/self.N)
 
         self.lowest_value = log10(.1/self.N)
+
+    def score(self, plaintext):
+        """
+        Creates a additive score based upon the log frequency of the n-grams.
+        :param plaintext: Plain text to score.
+        :return: The score.
+        """
+        myscore = 0
+        for l in self.log_prob:
+            s = plaintext.split(l)
+            if len(s) > 1:
+                myscore += (len(s) - 1) * self.log_prob[l]
+            else:
+                myscore += self.lowest_value
+        return myscore
