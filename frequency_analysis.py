@@ -20,44 +20,30 @@ def main():
     with open(cipherfile, 'r') as cf:
         ciphertext = cf.read()
 
-    totalletters, cipherlettercounts, cipherletterprobs = build_monogram_probabilities(ciphertext,
-                                                                                       args.spaces,
-                                                                                       args.punctuation)
-    totaldigrams, cipherdigramcounts, cipherdigramprobs = build_digram_probabilities(ciphertext,
-                                                                                     args.spaces,
-                                                                                     args.punctuation)
-    totaltrigrams, ciphertrigramcounts, ciphertrigramprobs = build_trigram_probabilities(ciphertext,
-                                                                                         args.spaces,
-                                                                                         args.punctuation)
+    cipherlettercounts = build_ngram_counts(ciphertext, 1, args.spaces, args.punctuation)
+    cipherdigramcounts = build_ngram_counts(ciphertext, 2, args.spaces, args.punctuation)
+    ciphertrigramcounts = build_ngram_counts(ciphertext, 3, args.spaces, args.punctuation)
+    cipherquadgramcounts = build_ngram_counts(ciphertext, 4, args.spaces, args.punctuation)
+
     print("**** Cipher Text ****")
     print("")
     print(ciphertext)
     print("")
-    print("Total Letters: {0}".format(totalletters))
-    print("")
-    print("Letter Count:")
+    print("Letter Counts:")
     for c in cipherlettercounts:
         print("{0} = {1}".format(c, cipherlettercounts[c]))
     print("")
-    print("Letter Frequency:")
-    for c in cipherletterprobs:
-        print("{0} = {1}".format(c, cipherletterprobs[c]))
-    print("")
-    print("Digram Count:")
+    print("Digram Counts:")
     for c in cipherdigramcounts:
         print("{0} = {1}".format(c, cipherdigramcounts[c]))
     print("")
-    print("Digram Frequency:")
-    for c in cipherdigramprobs:
-        print("{0} = {1}".format(c, cipherdigramprobs[c]))
-    print("")
-    print("Trigram Count:")
+    print("Trigram Counts:")
     for c in ciphertrigramcounts:
         print("{0} = {1}".format(c, ciphertrigramcounts[c]))
     print("")
-    print("Trigram Frequency:")
-    for c in ciphertrigramprobs:
-        print("{0} = {1}".format(c, ciphertrigramprobs[c]))
+    print("Quadgram Counts:")
+    for c in cipherquadgramcounts:
+        print("{0} = {1}".format(c, cipherquadgramcounts[c]))
     print("")
 
 

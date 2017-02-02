@@ -2,7 +2,7 @@ from collections import OrderedDict
 from curses.ascii import ispunct
 
 
-def sort_prob_dict_by_value_reverse( indict ):
+def sort_dict_by_value_reverse(indict):
     """
     Returns an OrderedDict that has been sorted on value.
 
@@ -20,7 +20,7 @@ def sort_prob_dict_by_value_reverse( indict ):
 
 # Source for these statistics:  Cryptography and Network Security, Principles and Practice,
 # William Stallings, 7th Edition, page 77, Figure 3.5
-stallings_english_letter_probabilities = sort_prob_dict_by_value_reverse({
+stallings_english_letter_probabilities = sort_dict_by_value_reverse({
     'a': 8.167 / 100,
     'b': 1.492 / 100,
     'c': 2.782 / 100,
@@ -52,7 +52,7 @@ stallings_english_letter_probabilities = sort_prob_dict_by_value_reverse({
 William Stallings, 7th Edition, page 77, Figure 3.5"""
 
 # Information from http://www.data-compression.com/english.html
-dc_english_letter_probabilities = sort_prob_dict_by_value_reverse({
+dc_english_letter_probabilities = sort_dict_by_value_reverse({
     'a': 0.0651738,
     'b': 0.0124248,
     'c': 0.0217339,
@@ -84,144 +84,32 @@ dc_english_letter_probabilities = sort_prob_dict_by_value_reverse({
 """Probabilities published http://www.data-compression.com/english.html"""
 
 
-def build_monogram_probabilities(inputtext=None, countspaces=False, countpunctuation=False):
-    """
-    Builds single letter probabilities from input text.
-
-    :param inputtext:  A string to analyze.
-    :param countspaces:  Set to True to treat spaces as a valid cipher character.
-    :param countpunctuation:  Set to True to treat punctuation as valid cipher character.  Will not count new lines.
-    :return: totalletters, lettercounts, letterprobs - totalletters is an int, lettercounts and letterprobs are an
-        OrderedDict sorted on value, descending.  None is returned if the inputtext is None.
-    """
-    # Show there is an error...
-    if inputtext is None:
+def build_ngram_counts(inputtext=None, n=1, countspace=False, countpunctuation=False):
+    if inputtext is None or n < 1:
         return None
 
-    totalletters = 0
-    lettercounts = dict()
+    ngrams = dict()
+    for c in range(len(inputtext)):
+        if not (inputtext[c].isalpha() or
+                (ispunct(inputtext[c]) and countpunctuation is True and inputtext[c] != '\n') or
+                (inputtext[c] == ' ' and countspace is True)):
+            continue
 
-    for c in inputtext:
-        if c.isalpha():
-            totalletters += 1
-            if c in lettercounts:
-                lettercounts[c] += 1
+        i = 0
+        ngram = ""
+        while len(ngram) < n and c+i < len(inputtext):
+            if (inputtext[c+i].isalpha() or
+                (ispunct(inputtext[c+i]) and countpunctuation is True and inputtext[c+i] != '\n') or
+                    (inputtext[c+i] == ' ' and countspace is True)):
+                ngram += inputtext[c+i]
+                print("n {0} ngram {1} c {2} i {3}".format(n,ngram,c,i))
+            i += 1
+
+        if len(ngram) == n:
+            if ngram in ngrams:
+                ngrams[ngram] += 1
             else:
-                lettercounts[c] = 1
-        if countspaces is True and c == ' ':
-            totalletters += 1
-            if c in lettercounts:
-                lettercounts[c] += 1
-            else:
-                lettercounts[c] = 1
-        if countpunctuation is True and ispunct(c) and c != '\n':
-            totalletters += 1
-            if c in lettercounts:
-                lettercounts[c] += 1
-            else:
-                lettercounts[c] = 1
+                ngrams[ngram] = 1
+            print(ngrams)
 
-    letterprobs = dict()
-    for i in lettercounts:
-        letterprobs[i] = lettercounts[i]/totalletters
-
-    orderedlettercounts = sort_prob_dict_by_value_reverse(lettercounts)
-    orderedletterprobs = sort_prob_dict_by_value_reverse(letterprobs)
-
-    return totalletters, orderedlettercounts, orderedletterprobs
-
-
-def build_digram_probabilities(inputtext=None, countspace=False, countpunctuation=False):
-    """
-    Builds double letter probabilities from input text.
-
-    :param inputtext:  A string to analyze.
-    :param countspaces:  Set to True to treat spaces as a valid cipher character.
-    :param countpunctuation:  Set to True to treat punctuation as valid cipher character.  Will not count new lines.
-    :return: totalletters, lettercounts, letterprobs - totalletters is an int, lettercounts and letterprobs are an
-        OrderedDict sorted on value, descending.  None is returned if the inputtext is None.
-    """
-    # Show there is an error...
-    if inputtext is None:
-        return None
-
-    totaldigrams = 0
-    digramcounts = dict()
-
-    for i in range(len(inputtext)-1):
-        digram = ""
-        founddigram = False
-        if inputtext[i].isalpha() or (countspace is True and inputtext[i] == ' ') or (countpunctuation is True
-                                                                                      and ispunct(inputtext[i])
-                                                                                      and inputtext[i] != '\n'):
-            digram += inputtext[i]
-            for j in range(i+1, len(inputtext)):
-                if inputtext[j].isalpha() or (countspace is True and inputtext[j] == ' ') or (countpunctuation is True
-                                                                                              and ispunct(inputtext[j])
-                                                                                              and inputtext[j] != '\n'):
-                    digram += inputtext[j]
-                    founddigram = True
-                    break
-
-            if founddigram is True:
-                if digram in digramcounts:
-                    digramcounts[digram] += 1
-                else:
-                    digramcounts[digram] = 1
-                totaldigrams += 1
-
-    digramprobs = dict()
-    for i in digramcounts:
-        digramprobs[i] = digramcounts[i]/totaldigrams
-
-    ordereddigramcounts = sort_prob_dict_by_value_reverse(digramcounts)
-    ordereddigramprobs = sort_prob_dict_by_value_reverse(digramprobs)
-
-    return totaldigrams, ordereddigramcounts, ordereddigramprobs
-
-
-def build_trigram_probabilities(inputtext=None, countspace=False, countpunctuation=False):
-    # Show there is an error...
-    if inputtext is None:
-        return None
-
-    totaltrigrams = 0
-    trigramcounts = dict()
-
-    for i in range(len(inputtext) - 2):
-        trigram = ""
-        foundtrigram = False
-        if inputtext[i].isalpha() or (countspace is True and inputtext[i] == ' ') or (countpunctuation is True
-                                                                                      and ispunct(inputtext[i])
-                                                                                      and inputtext[i] != '\n'):
-            trigram += inputtext[i]
-            for j in range(i + 1, len(inputtext) - 1):
-                if inputtext[j].isalpha() or (countspace is True and inputtext[j] == ' ') or (countpunctuation is True
-                                                                                              and ispunct(inputtext[j])
-                                                                                              and inputtext[j] != '\n'):
-                    trigram += inputtext[j]
-                    for k in range(j + 1, len(inputtext)):
-                        if inputtext[k].isalpha() or (countspace is True and inputtext[k] == ' ') or (
-                                    countpunctuation is True
-                            and ispunct(inputtext[k])
-                        and inputtext[k] != '\n'):
-                            trigram += inputtext[k]
-                            foundtrigram = True
-                            break
-                    break
-
-        if foundtrigram is True:
-            if trigram in trigramcounts:
-                trigramcounts[trigram] += 1
-            else:
-                trigramcounts[trigram] = 1
-            totaltrigrams += 1
-
-    trigramprobs = dict()
-    for i in trigramcounts:
-        trigramprobs[i] = trigramcounts[i] / totaltrigrams
-
-    orderedtrigramcounts = sort_prob_dict_by_value_reverse(trigramcounts)
-    orderedtrigramprobs = sort_prob_dict_by_value_reverse(trigramprobs)
-
-    return totaltrigrams, orderedtrigramcounts, orderedtrigramprobs
+    return sort_dict_by_value_reverse(ngrams)
