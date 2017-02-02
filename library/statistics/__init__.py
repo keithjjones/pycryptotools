@@ -113,3 +113,5 @@ def build_ngram_counts(inputtext=None, n=1, countspace=False, countpunctuation=F
             print(ngrams)
 
     return sort_dict_by_value_reverse(ngrams)
+
+class ngram_score(object):
