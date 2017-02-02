@@ -12,9 +12,6 @@ def main():
     parser.add_argument("-p", "--punctuation", action='store_true',
                         help="Counts punctuation as valid cipher characters instead of ignoring them."
                              "", required=False)
-    parser.add_argument("-k", "--knownprobabilities", action='store_true',
-                        help="Displays known letter probabilities from various sources."
-                             "", required=False)
 
     args = parser.parse_args()
 
@@ -63,20 +60,6 @@ def main():
         print("{0} = {1}".format(c, ciphertrigramprobs[c]))
     print("")
 
-    if args.knownprobabilities is True:
-        print("**** Researched Probabilities ****")
-        print("")
-        print("Single Letter, No Spaces, Source = Stallings:")
-        for c in stallings_english_letter_probabilities:
-            print("{0} = {1}".format(c, stallings_english_letter_probabilities[c]))
-        print("")
-        print("Digram, No Spaces, Source = Mayzner:")
-        for c in mayzner_english_digram_probabilities:
-            print("{0} = {1}".format(c, mayzner_english_digram_probabilities[c]))
-        print("")
-        print("Trigram, No Spaces, Source = Mayzner:")
-        for c in mayzner_english_trigram_probabilities:
-            print("{0} = {1}".format(c, mayzner_english_trigram_probabilities[c]))
 
 if __name__ == "__main__":
     main()

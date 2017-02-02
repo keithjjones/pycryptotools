@@ -33,12 +33,25 @@ def main():
     ngram2 = ngram2[['2-gram','*/*']]
     ngram2sorted = ngram2_to_ordered_dict(ngram2)
 
+    # with open('data/mobydick.txt', 'r') as mb:
+    #     exampletext = mb.read()
+    #     exampletext = exampletext.lower()
+
+    # totalletters, exlettercounts, exletterprobs = build_monogram_probabilities(exampletext,
+    #                                                                            args.spaces,
+    #                                                                            args.punctuation)
+    # totaldigrams, exdigramcounts, exdigramprobs = build_digram_probabilities(exampletext,
+    #                                                                          args.spaces,
+    #                                                                          args.punctuation)
+
     print("Cipher Text:")
     print("")
     print(ciphertext)
 
     ciphertoplain = minimize_digram_error(ciphertext, ngram1sorted, ngram2sorted,
                                           args.spaces, args.punctuation)
+    # ciphertoplain = minimize_digram_error(ciphertext, exletterprobs, exdigramprobs,
+    #                                       args.spaces, args.punctuation)
 
     print("Plain Text: \n")
 
