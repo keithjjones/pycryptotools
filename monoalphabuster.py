@@ -6,6 +6,7 @@ import os
 import string
 import random
 
+
 def main():
     parser = argparse.ArgumentParser(description='Attempts to decrypt mono alpha ciphers.')
     parser.add_argument('CipherFile',
@@ -48,19 +49,6 @@ def main():
     plainvalues = list(string.ascii_lowercase)
     cipherkey = plainvalues.copy()
 
-    # cipherkey = list()
-    # for c in cipherlettercounts:
-    #     cipherkey.append(c)
-    #
-    # # Find any missing values in our initial cipher key...
-    # ckset = set(cipherkey)
-    # missingset = set(plainvalues) - ckset
-    # for m in missingset:
-    #     cipherkey.append(m)
-    #
-    # print(cipherkey)
-    # print(len(cipherkey))
-
     # Print the cipher text...
     print("Cipher Text:")
     print("")
@@ -73,6 +61,9 @@ def main():
 
     print("Looping continuously, press ctl-c when you have your plain text!")
 
+    # The algorithm adopted below was adapted from http://practicalcryptography.com
+    # I tried to rewrite it from scratch using the algorithm only, and using Pandas as a data
+    # facility.
     i = 0
     while True:
         i += 1
