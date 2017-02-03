@@ -1,4 +1,7 @@
 class MonoAlphaSubstitution(object):
+    """
+    A monoalpha cipher object.
+    """
     def __init__(self, cipherkey, plainvalues):
         """
         Creates a mono alpha cipher object.
@@ -34,6 +37,24 @@ class MonoAlphaSubstitution(object):
 
         return plaintext
 
+    def encrypt(self, plaintext):
+        """
+        Encrypts the plain text using the key inside this object.
+
+        :param plaintext:  The plain text to encrypt.
+        :return: The cipher text version of the plain text, using the key inside this object.
+        """
+        plaintocipher = self.plaintocipher()
+
+        ciphertext = ""
+        for p in plaintext:
+            if p in plaintocipher:
+                ciphertext += plaintocipher[p]
+            else:
+                ciphertext += p
+
+        return ciphertext
+
     def ciphertoplain(self):
         """
         Returns a dictionary with key the cipher key and the value the plain text value.
@@ -44,3 +65,14 @@ class MonoAlphaSubstitution(object):
         for i in range(len(self.cipherkey)):
             c2p[self.cipherkey[i]] = self.plainvalues[i]
         return c2p
+
+    def plaintocipher(self):
+        """
+        Returns a dictionary with key the plain text key and the value the cipher text value.
+
+        :return: A dictionary useful for ciphering text.
+        """
+        p2c = dict()
+        for i in range(len(self.plainvalues)):
+            p2c[self.plainvalues[i]] = self.cipherkey[i]
+        return p2c
