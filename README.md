@@ -19,6 +19,66 @@ pip install -r requirements.txt
 
 `frequency_analysis.py` will show the ngram frequency analysis of an input file.
 
+## Example:
+
+```
+$ python frequency_analysis.py samples/cipher1.txt
+**** Cipher Text ****
+
+tpfccdlfdtte pcaccplircdt dklpcfrp?qeiq lhpqlipqeodf gpwafopwprti izxndkiqpkii krirrifcapnc dxkdciqcafmd vkfpcadf.
+
+
+Letter Counts:
+p = 13
+c = 12
+i = 11
+d = 10
+f = 9
+k = 6
+r = 6
+q = 6
+l = 5
+t = 5
+a = 5
+e = 3
+o = 2
+n = 2
+w = 2
+x = 2
+m = 1
+z = 1
+v = 1
+g = 1
+h = 1
+
+Digram Counts:
+ca = 4
+iq = 3
+pq = 3
+pc = 3
+cd = 3
+dt = 2
+df = 2
+ki = 2
+...
+lf = 1
+
+Trigram Counts:
+pqe = 2
+pca = 2
+qpk = 1
+dci = 1
+...
+lfd = 1
+
+Quadgram Counts:
+rrif = 1
+eodf = 1
+cdtd = 1
+...
+rpqe = 1
+```
+
 # Monoalpha (Simple) Substitution Cipher Cracker
 
 `monoalphabuster.py` tries to crack the input cipher file assuming a mono alpha substitution cipher was used.
